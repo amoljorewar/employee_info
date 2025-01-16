@@ -50,6 +50,28 @@ def add_employee():
 
     return jsonify({"message": "Employee added successfully!"}), 201
 
+# API Route to update an employee by ID
+@app.route('/update_employee/<int:id>', methods=['PUT'])
+def update_employee(id):
+    employee = Employee.query.get(id)
+    if not employee:
+        return jsonify({"error": "Employee not found"}), 404
+
+    # Get the updated data from the request
+    data = request.get_json()
+    
+    # Update fields
+    if 'name' in data:
+        employee.name = data['name']
+    if 'position' in data:
+        employee.position = data['position']
+    if 'salary' in data:
+        employee.salary = data['salary']
+
+    db.session.commit()
+
+    return jsonify({"message": "Employee updated successfully!"}), 200
+
 # API Route to delete an employee by ID
 @app.route('/delete_employee/<int:id>', methods=['DELETE'])
 def delete_employee(id):
@@ -81,4 +103,3 @@ def get_employees():
 # Start the app
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
-
